@@ -48,7 +48,7 @@ public class MonteCarloSimulation {
 	 * @param rnd                    random source to be used to simulate the experiment
 	 * @param stat                   collector to be used to collect the results of each experiment
 	 */
-	public static void simulateTillGivenCIHalfWidth(Experiment exp,
+        public static void simulateTillGivenCIHalfWidth(Experiment exp,
 													double level,
 													double maxHalfWidth,
 													long initialNumberOfRuns,
