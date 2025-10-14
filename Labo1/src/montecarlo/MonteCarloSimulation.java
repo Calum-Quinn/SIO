@@ -55,6 +55,22 @@ public class MonteCarloSimulation {
 													long additionalNumberOfRuns,
 													Random rnd,
 													StatCollector stat) {
-		//Write your code here
+        // Step 1: Perform the initial number of runs
+        simulateNRuns(exp, initialNumberOfRuns, rnd, stat);
+
+        // Step 2: Calculate amount of runs needed for desired confidence interval half-width
+        double currentHalfWidth = stat.getConfidenceIntervalHalfWidth(level);
+        long NBeforeRound = (long) Math.pow(currentHalfWidth / maxHalfWidth, 2);
+        // Round up to the nearest multiple of additionalNumberOfRuns
+        long N = ((NBeforeRound + additionalNumberOfRuns - 1) / additionalNumberOfRuns) * additionalNumberOfRuns;
+
+        // Step 3: Continue simulating for the N runs
+        simulateNRuns(exp, N, rnd, stat);
+
+        // Step 4: Check if the confidence interval half-width is within the desired limit
+        currentHalfWidth = stat.getConfidenceIntervalHalfWidth(level);
+        while (currentHalfWidth > maxHalfWidth) {
+            simulateNRuns(exp, additionalNumberOfRuns, rnd, stat);
+        }
 	}
 }
