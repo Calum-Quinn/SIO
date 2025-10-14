@@ -17,9 +17,12 @@ public class GoBigOrGoHome implements Experiment {
         int target = 2 * f;
 
         while (amount > 0 && amount < target) {
+            // Win
             if (rnd.nextDouble() < p) {
                 amount++;
-            } else {
+            }
+            // Loss
+            else {
                 amount--;
             }
         }

@@ -3,29 +3,30 @@ import statistics.*;
 
 import java.util.Random;
 
-// Juste pour l'exemple
-class FairCoinTossExperiment implements Experiment {
-	public double execute(Random rnd) {
-		return rnd.nextDouble() < 0.5 ? 1.0 : 0.0;
-	}
-}
-
 public class Main {
 
 	public static void main(String[] args) {
-	    // Juste pour l'exemple et vérifier que tout compile
-		StatCollector stat = new StatCollector();
+        double maxHalfWidth = 0.0001;
 
-		Random rnd = new Random();
-		rnd.setSeed(0x1350185);
+        for (int i = 0; i < 3; i++) {
+            StatCollector stat = new StatCollector();
 
-		Experiment exp = new FairCoinTossExperiment();
+            Random rnd = new Random();
+            rnd.setSeed(0x1350185);
 
-		MonteCarloSimulation.simulateNRuns(exp, 1_000_000, rnd, stat);
+            Experiment exp = new GoBigOrGoHome(18.0/37.0, 5);
 
-		System.out.printf("**********************%n  Simulation results%n**********************%n");
-		System.out.printf("Number of tosses generated: %d%n", stat.getNumberOfObs());
-		System.out.printf("Estimated prob. of head:    %.5f%n", stat.getAverage());
-		System.out.printf("Confidence interval (95%%):  %.5f +/- %.5f%n", stat.getAverage(), stat.getConfidenceIntervalHalfWidth(0.95));
+            long start = System.currentTimeMillis();
+            MonteCarloSimulation.simulateTillGivenCIHalfWidth(exp, 0.95, maxHalfWidth, 1000000, 100000, rnd, stat);
+            long end = System.currentTimeMillis();
+
+            System.out.printf("*************************************%n  Simulation results - Experiment %d%n*************************************%n", i + 1);
+            System.out.printf("Number of rounds generated: %d%n", stat.getNumberOfObs());
+            System.out.printf("Estimated prob. of doubling amount:    %.6f%n", stat.getAverage());
+            System.out.printf("Confidence interval (95%%):  %.5f +/- %.6f%n", stat.getAverage(), stat.getConfidenceIntervalHalfWidth(0.95));
+            System.out.printf("Time taken (ms): %d%n%n", end - start);
+
+            maxHalfWidth /= 2;
+        }
 	}
 }

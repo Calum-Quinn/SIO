@@ -60,6 +60,11 @@ public class MonteCarloSimulation {
 
         // Step 2: Calculate amount of runs needed for desired confidence interval half-width
         double currentHalfWidth = stat.getConfidenceIntervalHalfWidth(level);
+        // If the current half-width is already within the limit, no further action is needed
+        if (currentHalfWidth <= maxHalfWidth) {
+            return;
+        }
+        // Calculate the required number of runs using the formula, to divide interval size by x, x^2 more runs are needed
         long NBeforeRound = (long) Math.pow(currentHalfWidth / maxHalfWidth, 2);
         // Round up to the nearest multiple of additionalNumberOfRuns
         long N = ((NBeforeRound + additionalNumberOfRuns - 1) / additionalNumberOfRuns) * additionalNumberOfRuns;
@@ -71,6 +76,7 @@ public class MonteCarloSimulation {
         currentHalfWidth = stat.getConfidenceIntervalHalfWidth(level);
         while (currentHalfWidth > maxHalfWidth) {
             simulateNRuns(exp, additionalNumberOfRuns, rnd, stat);
+            currentHalfWidth = stat.getConfidenceIntervalHalfWidth(level);
         }
 	}
 }
