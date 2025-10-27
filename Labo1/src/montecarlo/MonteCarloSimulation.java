@@ -64,10 +64,14 @@ public class MonteCarloSimulation {
         if (currentHalfWidth <= maxHalfWidth) {
             return;
         }
-        // Calculate the required number of runs using the formula, to divide interval size by x, x^2 more runs are needed
-        long NBeforeRound = (long) Math.pow(currentHalfWidth / maxHalfWidth, 2);
+
+        // Calculate the total number of runs needed using the scaling relationship:
+        // n_needed = n_current * (currentHalfWidth / maxHalfWidth)^2
+        double totalRunsNeeded = initialNumberOfRuns * Math.pow(currentHalfWidth / maxHalfWidth, 2);
+        long additionalRunsNeeded = (long) totalRunsNeeded - initialNumberOfRuns;
+
         // Round up to the nearest multiple of additionalNumberOfRuns
-        long N = ((NBeforeRound + additionalNumberOfRuns - 1) / additionalNumberOfRuns) * additionalNumberOfRuns;
+        long N = ((additionalRunsNeeded + additionalNumberOfRuns - 1) / additionalNumberOfRuns) * additionalNumberOfRuns;
 
         // Step 3: Continue simulating for the N runs
         simulateNRuns(exp, N, rnd, stat);
