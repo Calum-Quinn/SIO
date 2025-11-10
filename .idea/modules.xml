@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ExerciceMonteCarlo/ExerciceMonteCarlo.iml" filepath="$PROJECT_DIR$/ExerciceMonteCarlo/ExerciceMonteCarlo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Labo0/Labo0.iml" filepath="$PROJECT_DIR$/Labo0/Labo0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Labo1/Labo1.iml" filepath="$PROJECT_DIR$/Labo1/Labo1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/labos.iml" filepath="$PROJECT_DIR$/.idea/labos.iml" />
+    </modules>
+  </component>
+</project>
