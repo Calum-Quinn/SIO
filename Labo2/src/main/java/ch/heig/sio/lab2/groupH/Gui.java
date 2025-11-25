@@ -11,8 +11,6 @@ public final class Gui {
     HeuristicComboItem[] heuristics = {
         new HeuristicComboItem("Canonical tour", new CanonicalTour()),
         new HeuristicComboItem("Random tour", new RandomTour()),
-
-        // TODO: Add your heuristics here, to appear in the drop-down
         new HeuristicComboItem("Nearest neighbor", new NearestNeighbor()),
         new HeuristicComboItem("Double ended nearest neighbor", new DoubleEndedNearestNeighbor())
     };
