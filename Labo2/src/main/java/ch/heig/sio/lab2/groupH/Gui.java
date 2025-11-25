@@ -1,4 +1,4 @@
-package ch.heig.sio.lab2.groupX;
+package ch.heig.sio.lab2.groupH;
 
 import ch.heig.sio.lab2.display.HeuristicComboItem;
 import ch.heig.sio.lab2.display.TspSolverGui;
@@ -13,6 +13,8 @@ public final class Gui {
         new HeuristicComboItem("Random tour", new RandomTour()),
 
         // TODO: Add your heuristics here, to appear in the drop-down
+        new HeuristicComboItem("Nearest neighbor", new NearestNeighbor()),
+        new HeuristicComboItem("Double ended nearest neighbor", new DoubleEndedNearestNeighbor())
     };
 
     // May not work on all platforms, comment out if necessary
