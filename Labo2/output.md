@@ -1,8 +1,5 @@
 # TSP Heuristics Performance Analysis
 
-**Authors:** Group H
-**Date:** November 25, 2025
-
 ## Overview
 
 This document presents the performance analysis of two heuristics for the Traveling Salesman Problem (TSP):
