@@ -11,28 +11,21 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 /**
- * Double Ended Nearest Neighbor (DENN) heuristic for the Traveling Salesman Problem.
+ * Double Ended Nearest Neighbor (DENN) heuristic for the Traveling Salesman Problem
  *
  * This heuristic constructs a tour by starting with the two nearest cities, then
  * repeatedly adding the nearest unvisited city to either end of the chain until
  * all cities have been visited. The last city is inserted between the two ends
- * to close the tour.
+ * to close the tour
  *
  * When multiple cities are equidistant from an endpoint, the city with the smallest
  * index is chosen. When a city is equidistant from both ends (head and tail),
- * it is added to the head (as per assignment requirements).
+ * it is added to the head (as per assignment requirements)
  *
  * Time complexity: O(n²) where n is the number of cities
  * Space complexity: O(n)
- *
- * @author Group H
  */
 public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeuristic {
-
-    /**
-     * Iterator for traversing the edges of the partial tour during construction.
-     * Used for visualization purposes through the observer pattern.
-     */
     private static final class Traversal implements Iterator<Edge> {
         /** Number of cities currently in the partial tour */
         private final int n;
@@ -44,7 +37,7 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
         private final int[] partialTour;
 
         /**
-         * Constructs a new traversal iterator.
+         * Constructs a new traversal iterator
          *
          * @param partialTour Array containing the cities in the partial tour
          * @param n Number of cities to traverse
@@ -58,14 +51,14 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
                 throw new IllegalArgumentException("Number of edges to traverse (" + (n - 1) +
                     ") should be smaller than tour length (" + partialTour.length + ").");
 
-            // Avoid self-loop if n = 1.
+            // Avoid self-loop if n = 1
             if (n < 2)
                 i = 1;
         }
 
         @Override
         public boolean hasNext() {
-            // Traverse only the edges of actual path without closing it (i < n would close it).
+            // Traverse only the edges of actual path without closing it (i < n would close it)
             return i < (n - 1);
         }
 
@@ -80,14 +73,14 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
 
     @Override
     public TspTour computeTour(TspData data, int startCityIndex, TspHeuristicObserver observer) {
-        // Number of cities in data set.
+        // Number of cities in data set
         int n = data.getNumberOfCities();
 
-        // Use a LinkedList to efficiently add cities at both ends - O(1) per insertion
+        // Used a LinkedList to efficiently add cities at both ends
         LinkedList<Integer> chain = new LinkedList<>();
         chain.add(startCityIndex);
 
-        // Array to keep track of visited cities - O(n) space
+        // Array to keep track of visited cities
         boolean[] visited = new boolean[n];
         visited[startCityIndex] = true;
 
@@ -105,7 +98,7 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
             }
         }
 
-        // Add the nearest city to form initial chain: [head, tail]
+        // Add the nearest city
         chain.add(nearestToStart);
         visited[nearestToStart] = true;
 
@@ -124,7 +117,7 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
         // Build the tour by adding cities to either end until only one city remains
         int citiesAdded = 2;
         while (citiesAdded < n - 1) {
-            // Find the nearest unvisited city to either head or tail - O(n) per iteration
+            // Find the nearest unvisited city to either the head or the tail
             int nearestCity = -1;
             int shortestDistance = Integer.MAX_VALUE;
             boolean addToHead = true; // Track whether to add to head or tail
@@ -137,15 +130,14 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
                     // Find minimum distance to either end
                     int minDistance = Math.min(distanceToHead, distanceToTail);
 
-                    // Update nearest city if this city is closer, or if it's equally close
-                    // but has a smaller index (tie-breaking rule)
+                    // Check distance and apply tie-breaking rule
                     if (minDistance < shortestDistance ||
                         (minDistance == shortestDistance && city < nearestCity)) {
                         shortestDistance = minDistance;
                         nearestCity = city;
 
                         // Determine which end to add to
-                        // If distances are equal, prefer head (as per assignment requirements)
+                        // If distances are equal, prefer head
                         if (distanceToHead <= distanceToTail) {
                             addToHead = true;
                         } else {
@@ -182,10 +174,10 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
             }
         }
 
-        // Insert the last city at the end (which will connect back to head to close the cycle)
+        // Insert the last city at the end, which will connect back to head to close the cycle
         chain.addLast(lastCity);
         length += data.getDistance(tail, lastCity);
-        length += data.getDistance(lastCity, head); // Close the tour
+        length += data.getDistance(lastCity, head);
 
         // Convert LinkedList to array for the final tour
         int[] tour = new int[n];
@@ -198,7 +190,7 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
     }
 
     /**
-     * Helper method to copy the current chain to an array for observer notification.
+     * Helper method to copy the current chain to an array for observer notification
      *
      * @param chain The current chain as a LinkedList
      * @param array The array to copy to
@@ -208,10 +200,5 @@ public class DoubleEndedNearestNeighbor implements ObservableTspConstructiveHeur
         for (int city : chain) {
             array[idx++] = city;
         }
-    }
-
-    @Override
-    public TspTour computeTour(TspData data, int startCity) {
-        return ObservableTspConstructiveHeuristic.super.computeTour(data, startCity);
     }
 }

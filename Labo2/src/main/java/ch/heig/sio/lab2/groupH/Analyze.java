@@ -14,13 +14,11 @@ import java.util.Map;
  * heuristics on multiple TSP instances, testing each heuristic with every possible
  * starting city. It computes and displays statistics including minimum, mean, and
  * maximum tour lengths (both absolute and relative to optimal solutions).
- *
- * @author Group H
  */
 public final class Analyze {
 
     /**
-     * Map of instance names to their optimal tour lengths (from assignment).
+     * Map of instance names to their optimal tour lengths.
      */
     private static final Map<String, Long> OPTIMAL_SOLUTIONS = new HashMap<>();
 
@@ -76,7 +74,7 @@ public final class Analyze {
 
                     System.out.println("Heuristic: " + heuristicName);
 
-                    // Statistics accumulators
+                    // Statistics initialization
                     long minLength = Long.MAX_VALUE;
                     long maxLength = Long.MIN_VALUE;
                     long totalLength = 0;
@@ -85,9 +83,9 @@ public final class Analyze {
                     double totalRelative = 0.0;
 
                     // Measure computation time
-                    long startTime = System.nanoTime();
+                    long startTime = System.currentTimeMillis();
 
-                    // Run heuristic with each city as starting point
+                    // Run heuristic with each different city as the starting point
                     for (int startCity = 0; startCity < n; startCity++) {
                         TspTour tour = heuristic.computeTour(data, startCity);
                         long tourLength = tour.length();
@@ -104,8 +102,8 @@ public final class Analyze {
                         totalRelative += relativePerformance;
                     }
 
-                    long endTime = System.nanoTime();
-                    double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+                    long endTime = System.currentTimeMillis();
+                    double elapsedTimeMs = endTime - startTime;
 
                     // Calculate means
                     double meanLength = (double) totalLength / n;
@@ -128,10 +126,8 @@ public final class Analyze {
                     System.out.printf("  Average time per tour: %.4f ms%n", elapsedTimeMs / n);
                     System.out.println();
                 }
-
                 System.out.println("=".repeat(80));
                 System.out.println();
-
             } catch (java.io.FileNotFoundException e) {
                 System.err.println("Error: File not found - " + instance);
                 e.printStackTrace();
@@ -140,7 +136,6 @@ public final class Analyze {
                 e.printStackTrace();
             }
         }
-
         System.out.println("Analysis complete.");
     }
 }

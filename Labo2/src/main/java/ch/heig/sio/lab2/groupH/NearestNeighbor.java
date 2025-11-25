@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Nearest Neighbor (NN) heuristic for the Traveling Salesman Problem.
+ * Nearest Neighbor (NN) heuristic for the Traveling Salesman Problem
  *
  * This heuristic constructs a tour by starting at a given city and repeatedly
  * adding the nearest unvisited city to the end of the tour until all cities
- * have been visited.
+ * have been visited
  *
  * When multiple cities are equidistant (ties), the city with the smallest
- * index is chosen.
+ * index is chosen
  *
  * Time complexity: O(n²)
  * Space complexity: O(n)
@@ -34,7 +34,7 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
         private final int[] partialTour;
 
         /**
-         * Constructs a new traversal iterator.
+         * Constructs a new traversal iterator
          *
          * @param partialTour Array containing the cities in the partial tour
          * @param n Number of cities to traverse
@@ -48,14 +48,14 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
                 throw new IllegalArgumentException("Number of edges to traverse (" + (n - 1) +
                     ") should be smaller than tour length (" + partialTour.length + ").");
 
-            // Avoid self-loop if n = 1.
+            // Avoid self-loop if n = 1
             if (n < 2)
                 i = 1;
         }
 
         @Override
         public boolean hasNext() {
-            // Traverse only the edges of actual path without closing it (i < n would close it).
+            // Traverse only the edges of actual path without closing it (i < n would close it)
             return i < (n - 1);
         }
 
@@ -70,21 +70,21 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
 
     @Override
     public TspTour computeTour(TspData data, int startCityIndex, TspHeuristicObserver observer) {
-        // Number of cities in data set.
+        // Number of cities in data set
         int n = data.getNumberOfCities();
 
-        // Array storing the (partial) tour.
+        // Array storing the partial tour
         int[] tour = new int[n];
         tour[0] = startCityIndex;
 
-        // Array to keep track of visited cities - O(n) space
+        // Array to keep track of visited cities
         boolean[] visited = new boolean[n];
         visited[startCityIndex] = true;
 
-        // Current city (last city added to the tour)
+        // Current city (latest city added to the tour)
         int currentCity = startCityIndex;
 
-        // Incrementally computed tour length.
+        // Tour length
         long length = 0;
 
         // Build the tour by adding n-1 cities (the starting city is already in the tour)
@@ -92,13 +92,12 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
             int nearestCity = -1;
             int shortestDistance = Integer.MAX_VALUE;
 
-            // Find the nearest unvisited city to currentCity - O(n) per iteration
+            // Find the nearest unvisited city to currentCity
             for (int city = 0; city < n; city++) {
                 if (!visited[city]) {
                     int distance = data.getDistance(currentCity, city);
 
-                    // Choose this city if it's closer, or if it's equally close but has a smaller index
-                    // (tie-breaking rule: choose smallest city number)
+                    // Check distance and apply tie-breaking rule
                     if (distance < shortestDistance ||
                         (distance == shortestDistance && city < nearestCity)) {
                         shortestDistance = distance;
@@ -107,14 +106,14 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
                 }
             }
 
-            // Add the nearest city to the tour
+            // Add the calculated nearest city to the tour
             tour[step] = nearestCity;
             visited[nearestCity] = true;
 
             // Update tour length
             length += shortestDistance;
 
-            // Move to the newly added city
+            // Set the newly added city as the current city
             currentCity = nearestCity;
 
             // Notify observer for visualization (show partial tour)
@@ -125,10 +124,5 @@ public class NearestNeighbor implements ObservableTspConstructiveHeuristic {
         length += data.getDistance(tour[n - 1], tour[0]);
 
         return new TspTour(data, tour, length);
-    }
-
-    @Override
-    public TspTour computeTour(TspData data, int startCity) {
-        return ObservableTspConstructiveHeuristic.super.computeTour(data, startCity);
     }
 }
